@@ -1,0 +1,166 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection) or
+# paste cURL into the file and request will be converted to HTTP Request format.
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+###  创建一个新的 people 索引，注意，将IP替换为你们自己的主机地址
+PUT http://127.0.0.1:9200/people
+Content-Type: application/json
+
+{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "properties": {
+      "type": {"type": "keyword"},
+      "name": {"type": "text"},
+      "country": {"type": "keyword"},
+      "age": {"type": "integer"},
+      "score": {"type": "integer"},
+      "date": {
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ss || yyyy-MM-dd || epoch_millis"
+      }
+    }
+  }
+}
+
+###
+###  向 people索引中插入一条  指定ID的数据，注意请求方式为 PUT
+# 路径格式为 http://<ip>:<port>/<索引>/_doc/<文档ID>，下面我们插入了一条 ID 为 1 的数据
+PUT http://127.0.0.1:9200/people/_doc/1
+Content-Type: application/json
+
+{
+  "type": "man",
+  "name": "Zereao",
+  "country": "China",
+  "age": "23",
+  "date": "1995-11-27"
+}
+
+###
+###  向 people索引中插入一条  自动生成ID的数据，注意，请求方式为 POST，并删除URL末尾的 ID
+POST http://127.0.0.1:9200/people/_doc/
+Content-Type: application/json
+
+{
+  "type": "man",
+  "name": "AutoZereao",
+  "country": "China",
+  "age": "23",
+  "date": "1995-11-27 12:25:35"
+}
+
+###
+###  修改 ID 为 1 的文档的 name 字段值为 UpdateZereao，格式：{index}/_update/{id}
+POST http://127.0.0.1:9200/people/_update/1/
+Content-Type: application/json
+
+{
+  "doc": {
+    "name": "刘安民",
+    "date": "1996-05-15"
+  }
+}
+
+###
+POST http://127.0.0.1:9200/people/_update/1/
+Content-Type: application/json
+
+{
+  "script": "ctx._source.age=23"
+}
+
+###
+###  删除 people索引中 ID = 1 的文档
+DELETE http://127.0.0.1:9200/people/_doc/AWnqO28Bk93Nzr9XHHOK/
+Content-Type: application/json
+
+###
+###  删除 people 索引
+DELETE http://127.0.0.1:9200/people
+Content-Type: application/json
+
+###
+###  简单查询，查询 book 索引中，ID为1 的文档
+GET http://127.0.0.1:9200/people/_doc/1
+Content-Type: application/json
+
+###
+### 条件查询，查询所有数据
+POST http://127.0.0.1:9200/people/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+###
+### 条件查询，查询标题中包含 传 字的文档
+POST http://127.0.0.1:9200/people/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "match": {
+      "name": "刘"
+    }
+  }
+}
+
+###
+PUT http://127.0.0.1:9200/test/_doc/1
+Content-Type: application/json
+
+{
+
+  "score": {
+    "type": "text"
+  }
+
+}
+
+
+###
+GET  http://127.0.0.1:9200/people/_mapping
+
+###
+DELETE http://127.0.0.1:9200/test
+
+###
+###  创建一个新的 people 索引，注意，将IP替换为你们自己的主机地址
+PUT http://127.0.0.1:9200/test
+Content-Type: application/json
+
+{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "properties": {
+      "name": {"type": "text"},
+      "country": {"type": "keyword"},
+      "age": {"type": "integer"}
+    }
+  }
+}
+
+###
+PUT http://127.0.0.1:9200/test/_doc/1
+Content-Type: application/json
+
+{
+  "name": "刘安民",
+  "country": "China",
+  "age": "23"
+}
+
+###
